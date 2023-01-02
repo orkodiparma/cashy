@@ -14,7 +14,10 @@ export default {
 				winespritzer: { price: 3.5, deposit: 1, name: 'Weinschorle', amount: 0 },
 				water: { price: 1, deposit: 1, name: 'Wasser', amount: 0 },
 				depositBack: { price: 0, deposit: -1, name: 'Flasche zurück', amount: 0 }
-			},
+			}
+			// lastInteraction: new Date(),
+			// lastAutoReset: new Date(),
+			// secondsToResetDisplay: 30
 		}
 	},
 	computed: {
@@ -40,14 +43,17 @@ export default {
 	// They can be bound as event listeners in templates.
 	methods: {
 		clear() {
+			// this.lastInteraction = new Date()
 			for (let [drink, props] of Object.entries(this.pricelist)) {
 				this.pricelist[drink].amount = 0
 			}
 		},
 		addDrink(drink) {
+			// this.lastInteraction = new Date()
 			this.pricelist[drink].amount++
 		},
 		removeDrink(drink) {
+			// this.lastInteraction = new Date()
 			if (this.pricelist[drink].amount == 0) {
 				return
 			}
@@ -59,26 +65,38 @@ export default {
 	// of a component's lifecycle.
 	// This function will be called when the component is mounted.
 	mounted() {
+		// setInterval( () => {
+		// 	if ( ((this.lastInteraction - this.lastAutoReset) / 1000) > 30 ) {
+		// 		this.clear()
+		// 		this.lastAutoReset = new Date()
+		// 		this.secondsToResetDisplay = 31
+		// 		console.log('auto reset')
+		// 	}
+		// 	if (this.secondsToResetDisplay > 0) {
+		// 		this.secondsToResetDisplay--
+		// 	}
+
+		// }, 1*1000)
 	}
 }
 </script>
-
 <template>
 	<main>
-		<button v-on:click="clear">Clear</button>
 		<div id="layout">
+			<div id="totalbox">
+				<div id="total" class="fatlabel highlite">
+					<div>Endsumme:</div>
+					<div>{{ new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(total) }}</div>
+				</div>
+				<div id="depositButtons" class="fatlabel highlite">
+					<div v-if="deposit < 0">{{ Math.abs(deposit) }} Pfandmarken nehmen</div>
+					<div v-if="deposit >= 0">{{ Math.abs(deposit) }} Pfandmarken geben</div>
+				</div>
+
+				<button v-on:click="clear">Clear {{ secondsToResetDisplay }}</button>
+
+			</div>
 			<table id="table" border="0">
-				<thead>
-					<tr>
-						<th align="center" style="font-weight: bold;">Menge</th>
-						<th align="center" style="font-weight: bold;">Getränk</th>
-						<th>&nbsp;</th>
-						<th>&nbsp;</th>
-						<!--
-					<th>Preis</th>
-					-->
-					</tr>
-				</thead>
 				<tbody>
 					<tr v-for="(value, key) in pricelist" :key="key">
 						<td align="center" style="font-weight: bold;"
@@ -93,31 +111,9 @@ export default {
 						<td>
 							<button v-on:click="removeDrink(key)">-</button>
 						</td>
-						<!--
-					<td>{{ this.pricelist[key].price * this.pricelist[key].amount }}</td>
-					-->
 					</tr>
 				</tbody>
 			</table>
-			<div id="totalbox">
-				<!-- <div id="drinkprice" class="fatlabel light">
-					<span>Getränkepreis:</span>
-					{{ drinks_price }}
-				</div>
-				<div id="deposit" class="fatlabel light">
-					<span>Pfand:</span>
-					{{ deposit }}
-				</div> -->
-				<div id="total" class="fatlabel highlite">
-					<div>Endsumme:</div>
-					<div>{{ total }} &euro;</div>
-				</div>
-				<div id="depositButtons" class="fatlabel highlite">
-					<div v-if="deposit < 0">{{ Math.abs(deposit) }} Pfandmarken nehmen</div>
-					<div v-if="deposit >= 0">{{ Math.abs(deposit) }} Pfandmarken geben</div>
-				</div>
-
-			</div>
 		</div>
 	</main>
 </template>
@@ -133,7 +129,10 @@ export default {
 }
 
 #totalbox {
-	margin-left: 20px;
+	margin-right: 20px;
+	background-color: rgba(255, 255, 255, 0.2);
+	border-radius: 5px;
+	padding: 10px;
 }
 
 #drinkprice,
@@ -147,7 +146,7 @@ export default {
 
 .fatlabel {
 	font-weight: bold;
-	font-size: 60px;
+	font-size: 50px;
 }
 
 .fatlabel.light {
