@@ -106,10 +106,10 @@ export default {
 						<td align="center" :class="{ 'highlite': this.pricelist[key].amount > 0 }">{{ value.name }}
 						</td>
 						<td>
-							<button v-on:click="addDrink(key)">+</button>
+							<button v-on:click="removeDrink(key)" :disabled="this.pricelist[key].amount < 1">-</button>
 						</td>
 						<td>
-							<button v-on:click="removeDrink(key)">-</button>
+							<button v-on:click="addDrink(key)">+</button>
 						</td>
 					</tr>
 				</tbody>
@@ -126,6 +126,13 @@ export default {
 #layout {
 	display: flex;
 	flex-flow: row;
+	align-items: flex-start;
+}
+
+@media (max-width: 930px) {
+	#layout {
+		flex-flow: column;
+	}
 }
 
 #totalbox {
@@ -135,15 +142,12 @@ export default {
 	padding: 10px;
 }
 
-#drinkprice,
-#deposit,
 #total {
 	display: flex;
 	flex-flow: row;
 	justify-content: space-between;
 	width: 500px;
 }
-
 .fatlabel {
 	font-weight: bold;
 	font-size: 50px;
@@ -158,7 +162,6 @@ export default {
 }
 
 #table {
-	width: 100%;
 	font-size: x-large;
 }
 
@@ -166,5 +169,22 @@ button {
 	font-size: xx-large;
 	line-height: 50px;
 	width: 100px;
+}
+
+@media (max-width: 530px) {
+	#table {
+		padding-top: 15px;
+	}
+	#total, #table {
+		width: 90vw;
+		margin: 0 auto;
+	}
+	.fatlabel {
+		font-weight: bold;
+		font-size: xx-large;
+	}
+	#depositButtons.fatlabel {
+		font-size: x-large;
+	}
 }
 </style>
